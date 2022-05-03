@@ -5,7 +5,6 @@ import './Styles/BookForm.css'
 import App from './Components/App'
 import reportWebVitals from './reportWebVitals'
 import { books } from './Components/books'
-import { authors } from './Components/authors'
 import { cartItems } from './Components/cartItems'
 import BookForm from './Components/BookForm'
 import Book from './Components/Book'
@@ -14,15 +13,21 @@ import axios from 'axios'
 
 //компонент каталога
 function Catalog() {
-  const [catalog, setCatalog] = useState([])
+  const [catalog, setCatalog] = useState(books)
 
-  React.useEffect(() => {
-    axios.get('https://localhost:7200/api/Book').then((response) => {
-      console.log(response)
-    }).catch(err => console.log(err))
-  }, [])
+  // useEffect(() => {
+  //   console.log(catalog)
+  // }, [catalog])
 
-  const removeBook = (id) => {
+  async function removeBook(id) {
+    await axios
+      .delete(`https://localhost:7200/api/Book?id=${id}`)
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
     let newCatalog = catalog.filter((book) => book.id !== id)
     console.log(newCatalog)
     setCatalog(newCatalog)
@@ -30,7 +35,7 @@ function Catalog() {
 
   const addToCart = (id) => {
     let item = catalog.find((item) => item.id === id)
-    item.itemCount += 1
+    item.count += 1
     cartItems.push(item)
   }
   return (
@@ -38,7 +43,6 @@ function Catalog() {
       <Header />
       <NavBar />
       <div className="catalog">
-        {/* {console.log(catalog)} */}
         {catalog.map((book, index) => {
           return (
             <Book
@@ -62,9 +66,19 @@ const AuthorForm = () => {
     setAuthor(e.target.value)
   }
   function handleSubmit(e) {
-    authors.unshift(author)
-    setAuthor('')
-    console.log(authors)
+    axios
+      .post('https://localhost:7200/api/Author', {
+        name: author,
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    // authors.unshift(author)
+    // setAuthor('')
+    // console.log(authors)
     e.preventDefault()
   }
   return (
@@ -105,7 +119,7 @@ function BookPage() {
     <>
       <Header />
       <NavBar />
-      <BookForm data={books}></BookForm>
+      <BookForm></BookForm>
       <Footer />
     </>
   )

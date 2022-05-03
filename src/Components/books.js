@@ -1,52 +1,9 @@
-export let books = [
-  {
-    id: 1,
-    title: 'Название книги',
-    author: 'Автор книги',
-    description: 'ddddddddddddddddddddddddddvdvvvvvssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssadddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddcsaaaaaaaaaaaaaaaaaaaadsdsssssssssssssssssssssssssssssssssssssscvvvvvvvvvvvvvvvvvvvvvvvvvvvv',
-    pageCount: '',
-    price: '555',
-    itemCount: 0,
-    img: 'https://marketplace.canva.com/EAD7WuSVrt0/1/0/1003w/canva-colorful-illustration-young-adult-book-cover-LVthABb24ik.jpg',
-  },
-  {
-    id: 2,
-    title: 'Название книги',
-    author: 'Автор книги',
-    description: 'fdfdfdf',
-    pageCount: '',
-    price: '111',
-    itemCount: 0,
-    img: 'https://marketplace.canva.com/EAD7WuSVrt0/1/0/1003w/canva-colorful-illustration-young-adult-book-cover-LVthABb24ik.jpg',
-  },
-  {
-    id: 3,
-    title: 'Название книги',
-    author: 'Автор книги',
-    description: '',
-    pageCount: '',
-    price: '333',
-    itemCount: 0,
-    img: 'https://marketplace.canva.com/EAD7WuSVrt0/1/0/1003w/canva-colorful-illustration-young-adult-book-cover-LVthABb24ik.jpg',
-  },
-  {
-    id: 4,
-    title: 'Название книги',
-    author: 'Автор книги',
-    description: '',
-    pageCount: '',
-    price: '444',
-    itemCount: 0,
-    img: 'https://marketplace.canva.com/EAD7WuSVrt0/1/0/1003w/canva-colorful-illustration-young-adult-book-cover-LVthABb24ik.jpg',
-  },
-  {
-    id: 5,
-    title: 'Название книги',
-    author: 'Автор книги',
-    description: '',
-    pageCount: '',
-    price: '222',
-    itemCount: 0,
-    img: 'https://marketplace.canva.com/EAD7WuSVrt0/1/0/1003w/canva-colorful-illustration-young-adult-book-cover-LVthABb24ik.jpg',
-  },
-]
+import axios from 'axios'
+
+export let books = []
+axios
+  .get('https://localhost:7200/api/Book')
+  .then((response) => {
+    books = response.data
+  })
+  .catch((err) => console.log(err))

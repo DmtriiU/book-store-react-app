@@ -1,20 +1,31 @@
-import React, { useState, useEffect } from 'react'
-import { authors } from './authors'
+import React, { useState } from 'react'
 import { books } from './books'
+import { authors } from './authors'
+import axios from 'axios'
 
 //компонент добавления новой книги в каталог
-const BookForm = (props) => {
-  const [id, setId] = useState('')
+const BookForm = () => {
   const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
+  const [author, setAuthor] = useState(0)
   const [description, setDescription] = useState('')
   const [pageCount, setPageCount] = useState('')
   const [price, setPrice] = useState('')
   const [itemCount, setItemCount] = useState(0)
+
+  // useEffect(() => {
+  //   axios
+  //     .get('https://localhost:7200/api/Author')
+  //     .then((response) => {
+  //       setAuthors(response.data)
+  //     })
+  //     .catch((err) => console.log(err))
+  // }, [])
+
   function handleTitle(e) {
     setTitle(e.target.value)
   }
   function handleAuthor(e) {
+    // console.log(e.target.value)
     setAuthor(e.target.value)
   }
   function handleDescription(e) {
@@ -27,23 +38,34 @@ const BookForm = (props) => {
     setPrice(e.target.value)
   }
   function handleSubmit(e) {
-    books.unshift({
-      ...books,
-      id: books.length + 1,
-      title: title,
-      author: author,
-      description: description,
-      pageCount: pageCount,
-      price: price,
-      itemCount: 0,
-    })
+    console.log(author)
+    axios
+      .post('https://localhost:7200/api/Book', {
+        title: title,
+        description: description,
+        pages: pageCount,
+        price: price,
+        authorId: author,
+      })
+      .then((res) => {
+        console.log(res)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+    // books.unshift({
+    //   title: title,
+    //   description: description,
+    //   pages: pageCount,
+    //   price: price,
+    //   authorId: author,
+    // })
     setTitle('')
-    setAuthor('')
+    setAuthor(0)
     setDescription('')
     setPageCount('')
     setPrice('')
     setItemCount(0)
-    console.log(books)
     e.preventDefault()
   }
   return (
@@ -60,8 +82,12 @@ const BookForm = (props) => {
         <br />
         <label htmlFor="authors">Автор:</label>
         <select name="authors" id="authors" onChange={handleAuthor}>
-          {authors.map((author, index) => {
-            return <option value={index}>{author}</option>
+          {authors.map((author) => {
+            return (
+              <option value={author.id}>
+                {author.surname} {author.name}
+              </option>
+            )
           })}
         </select>
         <br />

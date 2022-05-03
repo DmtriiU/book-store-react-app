@@ -233,6 +233,7 @@ td button {
   display: block;
 }
 
+
 .popups {
   position: fixed; /* Stay in place */
   z-index: 1; /* Sit on top */
@@ -249,6 +250,8 @@ td button {
   border-radius: 5px;
   overflow-wrap: break-word;
   position: relative;
+  left: 0px;
+  bottom: 100px;
   background-color: #fefefe;
   margin: 15% auto; /* 15% from the top and centered */
   padding: 20px;
@@ -271,4 +274,17 @@ td button {
 .close:focus {
   color: red;
   cursor: pointer;
+}
+
+#save {
+  width: 15%;
+  background-color: #222;
+  border: none;
+  color: white;
+  font-size: 12px;
+  padding: 16px 32px;
+  text-decoration: none;
+  margin: 4px 2px;
+  cursor: pointer;
+  float: none;
 }
