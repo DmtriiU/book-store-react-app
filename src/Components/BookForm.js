@@ -1,31 +1,30 @@
-import React, { useState } from 'react'
-import { books } from './books'
+import React, { useState, useEffect } from 'react'
 import { authors } from './authors'
 import axios from 'axios'
 
 //компонент добавления новой книги в каталог
-const BookForm = () => {
+const BookForm = (props) => {
   const [title, setTitle] = useState('')
   const [author, setAuthor] = useState(0)
+  const [authors, setAuthors] = useState([])
   const [description, setDescription] = useState('')
   const [pageCount, setPageCount] = useState('')
   const [price, setPrice] = useState('')
   const [itemCount, setItemCount] = useState(0)
 
-  // useEffect(() => {
-  //   axios
-  //     .get('https://localhost:7200/api/Author')
-  //     .then((response) => {
-  //       setAuthors(response.data)
-  //     })
-  //     .catch((err) => console.log(err))
-  // }, [])
+  useEffect(() => {
+    axios
+      .get('https://localhost:7200/api/Author')
+      .then((response) => {
+        setAuthors(response.data)
+      })
+      .catch((err) => console.log(err))
+  }, [authors])
 
   function handleTitle(e) {
     setTitle(e.target.value)
   }
   function handleAuthor(e) {
-    // console.log(e.target.value)
     setAuthor(e.target.value)
   }
   function handleDescription(e) {
@@ -67,6 +66,7 @@ const BookForm = () => {
     setPrice('')
     setItemCount(0)
     e.preventDefault()
+    props.showCatalog()
   }
   return (
     <div className="bookform">

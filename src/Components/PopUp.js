@@ -12,7 +12,7 @@ function PopUp(props) {
         <a class="close" href="#" onClick={closePopUp}>
           &times;
         </a>
-        <p>Описание: {props.book.description}</p>
+        <p>{props.book.description}</p>
         <p>Стоимость: {props.book.price} &#8381;</p>
       </div>
     </div>

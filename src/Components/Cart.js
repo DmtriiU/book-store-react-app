@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { cartItems } from './cartItems'
 import { authors } from './authors'
+import { books } from './books'
 import { NavBar } from '..'
 import { Header } from '..'
 import { Footer } from '..'
@@ -9,63 +10,99 @@ import axios from 'axios'
 //компонент корзины
 function Cart() {
   const [items, setItems] = useState(
-    cartItems.reduce(
-      (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
-      []
-    )
+    // cartItems.reduce(
+    //   (unique, item) => (unique.includes(item) ? unique : [...unique, item]),
+    //   []
+    // )
+    cartItems.filter((el, id) => cartItems.indexOf(el) === id)
   )
+  const [orderConfirmed, setOrderConfirmed] = useState(false)
+  console.log('items', items)
+  console.log(orderConfirmed)
+  let orderId = 1
   const totalPrice = items.reduce((a, c) => a + c.price * c.count, 0)
+
   const removeFromCart = (id) => {
     let newCartItems = items.filter((item) => item.id !== id)
-    console.log(newCartItems)
     setItems(newCartItems)
-  }
-  const incrementCount = (id) => {
-    let product = items.find((item) => item.id === id)
-    if (product) {
-      setItems(
-        items.map((item) =>
-          item.id == id
-            ? { ...product, count: product.count + 1 }
-            : item
-        )
+    cartItems.length = 0
+    newCartItems.map((item) => cartItems.push(item))
+    let book = books.find((book) => book.id === id)
+    if (book) {
+      let newBooks = books.map((item) =>
+        item.id == id ? { ...book, count: 0 } : item
       )
+      books.length = 0
+      newBooks.map((book) => books.push(book))
+      console.log('newCartItems', cartItems)
     }
   }
+
+  const incrementCount = (id) => {
+    let product = items.find((item) => item.id === id)
+    // let book = books.find((book) => book.id === id)
+    // if (book) {
+    //   let newBooks = books.map((item) =>
+    //     item.id == id ? { ...book, count: book.count + 1 } : item
+    //   )
+    //   books.length = 0
+    //   newBooks.map((book) => books.push(book))
+    // }
+    if (product) {
+      let newItems = items.map((item) =>
+        item.id == id ? { ...product, count: product.count + 1 } : item
+      )
+      setItems(newItems)
+      cartItems.length = 0
+      newItems.map((item) => cartItems.push(item))
+      console.log('books', books)
+      console.log('newCartItems+', cartItems)
+    }
+  }
+
   const decrementCount = (id) => {
     let product = items.find((item) => item.id === id)
     if (product) {
-      setItems(
-        items.map((item) =>
-          item.id == id
-            ? { ...product, count: product.count - 1 }
-            : item
-        )
+      let newItems = items.map((item) =>
+        item.id == id ? { ...product, count: product.count - 1 } : item
       )
+      setItems(newItems)
+      cartItems.length = 0
+      newItems.map((item) => cartItems.push(item))
+      console.log('books', books)
+      console.log('newCartItems+', cartItems)
     }
   }
+
   const confirmOrder = () => {
     let now = new Date()
-    console.log(now)
-     axios
-       .post('https://localhost:7200/api/Order', {
-         price: totalPrice,
-         dataTime: now,
-         bookID: 2,
-       })
-       .then((res) => {
-         console.log(res)
-       })
-       .catch((err) => {
-         console.log(err)
-       })
+    items.map((item, index) =>
+      axios
+        .post('https://localhost:7200/api/Order', {
+          id: orderId,
+          price: totalPrice,
+          dataTime: now,
+          items: [item.id],
+        })
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    )
+    orderId += 1
+    cartItems.length = 0
+    setItems([])
+    setOrderConfirmed(true)
   }
+
   return (
     <>
-      <Header />
-      <NavBar />
+      {/* <Header />
+      <NavBar /> */}
       <div>
-        {items.length === 0 && (
+        {!orderConfirmed && items.length === 0  && (
           <p>
             Корзина пуста, добавьте книги, иначе он придет за вами
             <img
@@ -75,6 +112,7 @@ function Cart() {
           </p>
         )}
       </div>
+      <div>{orderConfirmed && <p>Спасибо за заказ!!!</p>}</div>
       {items.length !== 0 && (
         <div className="cart">
           <table>
@@ -84,11 +122,8 @@ function Cart() {
             {items.map((item, index) => (
               <tr key={index} className="item">
                 <td>
-                  "{item.title}"
-                  ({
-                    authors.find((author) => author.id === item.authorId)
-                      .name
-                  }{' '}
+                  "{item.title}" (
+                  {authors.find((author) => author.id === item.authorId).name}{' '}
                   {
                     authors.find((author) => author.id === item.authorId)
                       .patronymic
@@ -96,7 +131,8 @@ function Cart() {
                   {
                     authors.find((author) => author.id === item.authorId)
                       .surname
-                  })
+                  }
+                  )
                   <button
                     type="submit"
                     {...(item.count === 0 && removeFromCart(item.id))}
@@ -114,17 +150,17 @@ function Cart() {
                     -
                   </button>
                 </td>
-                <td>{item.price * item.count}</td>
+                <td>{item.price * item.count} &#8381;</td>
               </tr>
             ))}
           </table>
-          <p>Итог: {totalPrice}</p>
+          <p>Итог: {totalPrice} &#8381;</p>
           <button id="submit" type="submit" onClick={() => confirmOrder()}>
             Оформить заказ
           </button>
         </div>
       )}
-      <Footer />
+      {/* <Footer /> */}
     </>
   )
 }
